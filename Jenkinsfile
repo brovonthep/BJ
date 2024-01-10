@@ -2,7 +2,8 @@ pipeline {
     agent any
     environment {
         APP_NAME = "test app name"
-        IMAGE_NAME = "ghcr.io/brovonthep/bj"
+        IMAGE_NAME = "ghcr.io/apisitssi/sdfnhsfnhfs"
+        TEST = "555555"
     } 
     stages {
         stage('Build Image' ) {
@@ -13,26 +14,25 @@ pipeline {
         stage("Build Stahe (Docker)"){
             agent { label "build-server" }
             steps {
-                sh "docker build -t $(env.IMAGE_NAME) ."
+                sh "docker build -t ${env.IMAGE_NAME} ."
             }
         }
-        
         stage('Deliver Docker Image') {
             agent {label 'build-server'}
             steps {
                 withCredentials(
                 [usernamePassword(
-                    credentialsId: 'brovonthep',
+                    credentialsId: 'apisitssi',
                     passwordVariable: 'githubPassword',
                     usernameVariable: 'githubUser'
                 )]
             ){
                 sh "docker login ghcr.io -u ${env.githubUser} -p ${env.githubPassword}"
-                sh "docker tag $(env.IMAGE_NAME) $(env.IMAGE_NAME):$(env.BUILD_NUMBER)"
-                sh "docker push $(env.IMAGE_NAME)"
-                sh "docker push $(env.IMAGE_NAME):$(env.BUILD_NUMBER)"
-                sh "docker rmi $(env.IMAGE_NAME)"
-                sh "docker rmi $(env.IMAGE_NAME):$(env.BUILD_NUMBER)"
+                sh "docker tag ${env.IMAGE_NAME} ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker push ${env.IMAGE_NAME}"
+                sh "docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker rmi ${env.IMAGE_NAME}"
+                sh "docker rmi ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
             }
             }
         }
