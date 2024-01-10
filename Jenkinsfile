@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         APP_NAME = "test app name"
+        IMAGE_NAME = "ghcr.io/brovonthep/bj"
     } 
     stages {
         stage('Build Image' ) {
