@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         APP_NAME = "test app name"
-        IMAGE_NAME = "ghcr.io/apisitssi/sdfnhsfnhfs"
-        TEST = "555555"
+        IMAGE_NAME = "ghcr.io/brovonthep/bj"
+        TEST = "HAha!!"
     } 
     stages {
         stage('Build Image' ) {
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 withCredentials(
                 [usernamePassword(
-                    credentialsId: 'apisitssi',
+                    credentialsId: 'brovonthep',
                     passwordVariable: 'githubPassword',
                     usernameVariable: 'githubUser'
                 )]
