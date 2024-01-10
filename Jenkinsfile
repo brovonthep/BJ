@@ -12,7 +12,7 @@ pipeline {
         stage("Build Stahe (Docker)"){
             agent { label "build-server" }
             steps {
-                sh "docker build -t ghcr.io/brovonthep/bj:latest ."
+                sh "docker build -t ghcr.io/brovonthep/bj ."
             }
         }
     }
