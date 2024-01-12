@@ -21,7 +21,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-service
+  name: user09-service
   labels:
     app: hello-service
 spec:
