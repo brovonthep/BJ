@@ -3,7 +3,7 @@ pipeline {
     environment {
         APP_NAME = "test app name"
         IMAGE_NAME = "ghcr.io/brovonthep/bj"
-        TEST = "HAha!!"
+        TEST = "555555"
     } 
     stages {
         stage('Build Image' ) {
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 withCredentials(
                 [usernamePassword(
-                    credentialsId: 'brovonthep',
+                    credentialsId: 'apisitssi',
                     passwordVariable: 'githubPassword',
                     usernameVariable: 'githubUser'
                 )]
@@ -36,10 +36,17 @@ pipeline {
             }
             }
         }
-        stage("Deploy Stage (K8s)"){
-            agent { label "deploy-server" }
+        stage('Deploy Stage (K8s)') {
+            agent {label 'deploy-server'}
             steps {
-                sh "kubectl apply -f deploy-web.yml"
+                script {
+                    try {
+                        sh "kubectl delete -f deploy-web.yml" 
+                    } catch (e){
+                        sh "echo can not delete"
+                    }
+                    sh "kubectl apply -f deploy-web.yml"   
+                }
             }
         }
     }
