@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bj
+  name: user09
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bj
+      app: user09
   template:
     metadata:
       labels:
-        app: bj
+        app: user09
     spec:
       containers:
-        - name: hello-world-server
+        - name: user09-server
           image: ghcr.io/brovonthep/bj
           ports:
             - containerPort: 80
