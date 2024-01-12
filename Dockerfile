@@ -1,5 +1,5 @@
 FROM nginx:alpine 
-##LABEL org.opencontainers.image.source https://github.com/brovonthep/bj
+LABEL org.opencontainers.image.source https://github.com/brovonthep/bj
 COPY ./html /usr/share/nginx/html
 
 
