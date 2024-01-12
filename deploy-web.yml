@@ -15,6 +15,7 @@ spec:
       containers:
         - name: user09-server
           image: ghcr.io/brovonthep/bj
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
 ---
@@ -26,7 +27,7 @@ metadata:
     app: user09-service
 spec:
   selector:
-    app: user09-world
+    app: user09
   ports:
     - name: http
       protocol: TCP
