@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <template id="portal_my_home" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[@id='portal_common_category']" position="replace">
-        </xpath>
-    </template>
-</odoo>
