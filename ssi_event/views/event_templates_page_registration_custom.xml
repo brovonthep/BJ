@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Tracks: List-based display -->
+<template id="navbar" inherit_id="website_event.navbar">
+    <xpath expr="//div//h6[@t-field='event.name']" position="replace">
+        <h3 t-field="event.name" t-attf-class="flex-grow-1 #{'my-2' if active_submenu else 'mb-0'}"/>
+    </xpath>
+    <xpath expr="//div[@id='o_wevent_event_submenu']//ul[@class='navbar-nav flex-md-wrap w-100']" position="attributes">
+        <attribute name="class">navbar-nav flex-md-wrap</attribute>
+    </xpath>
+</template>
+
+<template id="registration_template" inherit_id="website_event.registration_template">
+    <xpath expr="//button[@data-bs-target='#modal_ticket_registration']" position="replace">
+        <a t-if="event.event_registrations_open" id="registration_button_id" type="button" class="btn btn-primary w-100">Register</a>
+        <!-- <t t-esc="request.session"/>
+        <t t-if="True">
+            <button t-if="event.event_registrations_open" id="registration_id_button" type="button" data-bs-toggle="modal" data-bs-target="#modal_ticket_registration" class="btn btn-primary w-100">Register</button>
+        </t>
+        <a t-if="event.event_registrations_open" type="button" id="registration_id_button" data-bs-toggle="modal" data-bs-target="#modal_ticket_registration" class="btn btn-primary w-100">Register</a>
+        <button t-if="event.event_registrations_open" type="button" data-bs-toggle="modal" data-bs-target="#modal_ticket_registration" class="btn btn-primary w-100">Register</button>
+        <a t-if="event.event_registrations_open" type="button" href="/is_public2" data-bs-toggle="modal" data-bs-target="#modal_ticket_registration" class="btn btn-primary w-100">Register</a> -->
+    </xpath>
+</template>
+
+<template id="event_description_full" inherit_id="website_event.event_description_full">
+    <xpath expr="//section//div//div[@t-if='event.address_id']" position="replace">
+        <div t-if="event.address_id" class="o_wevent_sidebar_block border-bottom pb-3 mb-3">
+            <t t-if="event.address_id._interface_company_type=='location'">
+                <h6 class="o_wevent_sidebar_title"><strong>Location</strong></h6>
+                <h4 t-field="event.address_id" class="font-sans-serif mt-0 mb-1" style="font-size: 1rem" t-options='{
+                    "widget": "contact",
+                    "fields": ["name"]
+                }'/>
+                <div itemprop="location" class="mb-2 small" t-field="event.address_id" t-options='{
+                    "widget": "contact",
+                    "fields": ["address"],
+                    "no_marker": True
+                }'/>
+                <!-- <div class="mb-2 small" t-field="event.address_id" t-options='{
+                    "widget": "contact",
+                    "fields": ["phone", "mobile", "email", "website"]
+                }'/> -->
+                <a t-att-href="event._google_map_link()" target="_blank" class="btn btn-secondary text-bg-secondary w-100">
+                    <p class="mb-0"><i class="fa fa-map-marker fa-fw" role="img"/>Get the direction</p>
+                </a>
+            </t>
+            <t t-elif="event.address_id._interface_company_type=='online_meeting'">
+                <h6 class="o_wevent_sidebar_title"><strong>Online meeting</strong></h6>
+                <h4 t-field="event.address_id" class="font-sans-serif mt-0 mb-1" style="font-size: 1rem" t-options='{
+                    "widget": "contact",
+                    "fields": ["name"]
+                }'/>
+                <div itemprop="location" class="mb-2 small" t-field="event.address_id" t-options='{
+                    "widget": "contact",
+                    "fields": ["address"],
+                    "no_marker": True
+                }'/>
+                <!-- <div class="mb-2 small" t-field="event.address_id" t-options='{
+                    "widget": "contact",
+                    "fields": ["phone", "mobile", "email", "website"]
+                }'/> -->
+                <a t-att-href="event.address_id.website" target="_blank" class="btn btn-secondary text-bg-secondary w-100">
+                    <p class="mb-0"><i class="fa fa-chain fa-fw" role="img"/>Get the Link</p>
+                </a>
+            </t>
+        </div>
+    </xpath>
+</template>
+
+<template id="registration_event_question" inherit_id="website_event.registration_event_question">
+    <xpath expr="//input[@class='form-control']" position="attributes">
+        <attribute name="id">form-control-id</attribute>
+    </xpath>
+</template>
+
+<template id="registration_attendee_details" inherit_id="website_event.registration_attendee_details">
+    <xpath expr="//div[@id='modal_attendees_registration']" position="inside">
+        <script type="text/javascript" src="/ssi_event/static/src/js/custom_script.js"></script>
+    </xpath>
+    <!-- Change 'continue' button to use the website login settings -->
+    <xpath expr="//div[hasclass('modal-footer')]//button[hasclass('btn-primary')]" position="replace">
+        <t t-if="website.account_on_checkout == 'mandatory' and website.is_public_user()">
+            <a class="btn btn-primary" t-attf-href="/web/login?redirect=/event/#{slug(event)}">
+                <span>Sign In</span>
+                <span class="fa fa-sign-in"/>
+            </a>
+        </t>
+        <t t-else="">
+            <t t-set="has_paying_ticket" t-value="any(ticket.get('price', 0) > 0 for ticket in tickets)"/>
+            <button t-if="availability_check" type="submit" class="btn btn-primary">
+                <span t-if="has_paying_ticket">Confirm Registration</span>
+                <span t-else="">Confirm Registration</span>
+            </button>
+        </t>
+    </xpath>
+
+
+</template>
+
+<template id="modal_ticket_registration" inherit_id="website_event.modal_ticket_registration">
+    <xpath expr="//div[@id='o_wevent_tickets_collapse']//h5[@itemprop='name']" position="attributes">
+        <attribute name="t-att-class">'text-muted' if ticket.is_expired or not ticket.sale_available else ''</attribute>
+    </xpath>
+</template>
+
+</odoo>

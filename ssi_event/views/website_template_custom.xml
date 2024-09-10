@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="user_sign_in" inherit_id="portal.placeholder_user_sign_in">
+        <xpath expr="//li" position="before">
+            <li t-nocache="Profile session and user group can change unrelated to parent caches. Oauth"
+                t-nocache-_item_class="_item_class"
+                t-nocache-_link_class="_link_class"
+                groups="base.group_public" t-attf-class="#{_item_class} o_no_autohide_item">
+                <!-- <a class="list-group-item list-group-item-action py-2" id="auth_login">
+                    <span t-if="request.session.profile_session" class="text-danger fa fa-circle"/>
+                        Sign in
+                </a> -->
+                <a t-attf-class="#{_link_class}" id="auth_login">Sign in<span t-if="request.session.profile_session" class="text-danger fa fa-circle h1"/></a>
+                
+            </li>
+        </xpath>
+        <xpath expr="//li[2]" position="replace">
+        </xpath>
+    </template>
+
+</odoo>

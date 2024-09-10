@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="inherit_event_stage_view_form" model="ir.ui.view">
+        <field name="name">inherit.event.stage.view.form</field>
+        <field name="model">event.stage</field>
+        <field name="inherit_id" ref="event.event_stage_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet//group//group//field[@name='pipe_end']" position="replace">
+
+                <field name="pipe_stage" widget="radio"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="inherit_view_event_track_tree">
+        <field name="name">inherit.event.track.tree</field>
+        <field name="model">event.track</field>
+        <field name="inherit_id" ref="website_event_track.view_event_track_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree//field[@name='name']" position="before">
+                <field name="date"/>
+                <field name="duration" string="Duration(hr.)"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="website_event_track.action_event_track_from_event">
+        <field name="res_model">event.track</field>
+        <field name="name">Event Schedules</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="website_event_track.action_event_track">
+        <field name="res_model">event.track</field>
+        <field name="name">Event Schedules</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+    </record>
+
+</odoo> 

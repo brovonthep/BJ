@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Tracks: List-based display -->
+<template id="tracks_display_list" inherit_id="website_event_track.tracks_display_list" name="Tracks: List Display">
+    <xpath expr="//div[@t-if='tracks'][1]" position="replace">
+    </xpath>
+    <xpath expr="//div//ul//li//div[@class='row g-0']//div[@class='col-12 d-flex justify-content-between']" position="replace">
+        <div class="col-12 d-flex justify-content-between">
+            <!-- Hour: Live > Remaining > Hour: desktop only -->
+            <div t-if="tracks_date and today_tz &lt;= tracks_date"
+                >
+                <span t-if="track.is_track_live and not track.is_track_done"
+                    class="alert alert-danger px-2 py-1">Live</span>
+                <span class="fw-bold" t-elif="not track.is_track_done and track.is_track_soon">
+                    <span t-out="track.track_start_remaining"
+                        t-options="{'widget': 'duration', 'digital': False, 'format': 'narrow',
+                                    'add_direction': True, 'unit': 'second', 'round': 'minute'}"/>
+                </span>
+                <span class="fw-bold" t-elif="not track.is_track_done and not track.is_track_soon">
+                    <span t-out="track.date"
+                        t-options="{'widget': 'datetime', 'time_only': True, 'format': 'short',
+                                    'tz_name': event.date_tz}"/>
+                    -
+                    <span t-out="track.date+datetime.timedelta(hours=track.duration)"
+                        t-options="{'widget': 'datetime', 'time_only': True, 'format': 'short',
+                                    'tz_name': event.date_tz}"/>
+                    <span t-if="tracks_date and today_tz &lt;= tracks_date">
+                        <span t-if="track.duration and not track.is_track_done and not track.is_track_done">
+                            &amp;bull;
+                            <span t-out="track.duration" t-options="{'widget': 'duration', 'digital': False,
+                                                                    'format': 'short', 'unit': 'hour', 'round': 'minute'}"/>
+                        </span>
+                    </span>
+                </span>
+                <span t-else="" class="alert alert-dark px-2 py-1 small">Finished</span>
+            </div>
+            <!-- reminder -->
+            <div t-if="not event.is_done and (not track.date or today_tz &lt;= tracks_date) and option_track_wishlist"
+                class="d-none d-md-block">
+                <t t-call="website_event_track.track_widget_reminder">
+                    <t t-set="reminder_small" t-value="False"/>
+                    <t t-set="reminder_light" t-value="False"/>
+                </t>
+            </div>
+        </div>
+    </xpath>
+    <xpath expr="//div//ul//li//div[@class='row g-0']//div[@class='col-12 d-flex justify-content-between align-items-end']" position="replace">
+        <div class="row mt-2 pt-2">
+            <div t-if="track.website_image" class="col text-center bg-light p-3">
+                <div t-field="track.website_image" t-options="{'widget': 'image', 'max_width': '96', 'class':'me-2'}" class="mt-3"/>
+            </div>
+            <div t-else="" class="col text-center bg-light p-3">
+            </div>
+
+            <!-- <div t-if="track.partner_name or track.partner_function or track.partner_company_name" class="d-none d-md-flex flex-grow-1 flex-column ps-4 pe-5 pe-md-0 pb-4"> -->
+            <div t-if="track.partner_name or track.partner_function or track.partner_company_name" class="col-sm-9 bg-light p-3 pt-5">
+                <div t-if="track.partner_name" t-field="track.partner_name" class="mb-1 align-items-baseline text-break fw-bold"/>
+                <div t-if="track.partner_function" t-field="track.partner_function" class="mb-1 align-items-baseline text-break"/>
+                <div t-if="track.partner_company_name" t-field="track.partner_company_name" class="mb-1 align-items-baseline text-break"/>
+            </div>
+            <!-- <div t-else="" class="mt-4">
+                <div class="mb-1 align-items-baseline text-break fw-bold"/>
+                <div class="mb-1 align-items-baseline text-break fw-bold"/>
+                <di class="mb-1 align-items-baseline text-break fw-bold"/>
+            </div> -->
+
+            <div t-if="track.image" class="col bg-light p-3">
+                <div t-field="track.image" t-options="{'widget': 'image', 'max_width': '96', 'class':'rounded-circle me-2'}" class="text-center"/>
+            </div>
+            <!-- <div t-else="" class="ml-4">
+                <div class="me-2"/>
+            </div> -->
+        </div>
+        <!-- Aside column: tags -->
+        <div class="d-none d-md-flex justify-content-end align-items-center w-auto gap-2">
+            <!-- Tags: desktop only -->
+            <t t-foreach="track.tag_ids" t-as="tag">
+                <t t-if="tag.color" t-call="website_event_track.track_tag_badge_link"/>
+            </t>
+        </div>
+    </xpath>
+
+</template>
+
+<template id="session_topbar" inherit_id="website_event_track.session_topbar">
+    <xpath expr="//div//div//h3[@class='mt-3 mb-3 me-auto pe-sm-4']" position="replace">
+        <h3 class="mt-3 mb-3 me-auto pe-sm-4">Schedule</h3>
+    </xpath>
+
+    <xpath expr="//div//div//div//div[@class='dropdown-menu']//a[1]" position="replace">
+        <a t-att-href="'/event/%s/track?%s' % (
+                slug(event),
+                keep_query('*', search_wishlist='')
+            )"
+            class="dropdown-item d-flex align-items-center justify-content-between">
+            All Schedule
+        </a>
+    </xpath>
+
+    <xpath expr="//div//div//div//t[@t-call='website_event.events_search_box']//t[@t-set='_placeholder']" position="replace">
+        <t t-set="_placeholder" t-value="'Search a schedule ...'"/>
+    </xpath>
+</template>
+
+</odoo>

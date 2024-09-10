@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherit_event_event_tree" model="ir.ui.view">
+        <field name="name">inherit.event.event.tree</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">reject</attribute>
+            </xpath>
+            <xpath expr="//tree" position="inside">
+                <field name="reject" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit the Kanban view -->
+    <record id="inherit_event_event_kanban" model="ir.ui.view">
+        <field name="name">inherit.event.event.kanban</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Use XPath to locate and modify the div element -->
+            <xpath expr="//div[contains(@class, 'col-4 text-bg-primary p-2 text-center d-flex flex-column justify-content-center')]" position="attributes">
+                <attribute name="t-att-class">'col-4 p-2 text-center d-flex flex-column justify-content-center ' + (record.reject.raw_value ? 'text-bg-danger' : 'text-bg-primary')</attribute>
+            </xpath>
+            <xpath expr="//div[contains(@class, 'col-4 text-bg-primary p-2 text-center d-flex flex-column justify-content-center')]" position="inside">
+                <field name="reject" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_event_event_form" model="ir.ui.view">
+        <field name="name">inherit.event.event.form</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//div[@name='event_menu_configuration']" position="inside">
+                <field name="schedules_menu" invisible="1"/>
+            </xpath> -->
+            <xpath expr="//form//header//field[@name='stage_id']" position="before">
+                <button name="set_is_approved"
+                    type="object" class="text-bg-danger" invisible="0 if (is_approved and is_pending_approval) and length_visibility else 1" context="{'reject': 1}">
+                    Reject
+                </button>
+                <button name="set_is_approved"
+                    type="object" class="btn-primary" invisible="0 if (not is_approved and is_pending_approval) and length_visibility else 1">
+                    Approval
+                </button>
+                <button name="set_is_pending_approval"
+                    type="object" class="btn-primary" invisible="0 if not is_approved and not is_pending_approval else 1">
+                    Save
+                </button>
+                <button name="set_is_pending_approval"
+                    type="object" class="text-bg-danger" invisible="0 if (not is_approved and is_pending_approval) and length_visibility else 1" context="{'reject': 1}">
+                    Reject
+                </button>
+                <field name="is_approved" invisible="1"/>
+                <field name="is_pending_approval" invisible="1"/>
+                <field name="reject" invisible="1"/>
+                <field name="length_visibility" invisible="1"/>
+            </xpath>
+            <xpath expr="//form//sheet//widget[@name='web_ribbon']" position="after">
+                <widget name="web_ribbon" text="Reject" bg_color="text-bg-danger" invisible="0 if reject else 1"/>
+            </xpath>
+
+            <xpath expr="//form//sheet//group//group//field[@name='date_begin']" position="after">
+                <field name="publication_date"/>
+            </xpath>
+
+            <xpath expr="//form//sheet//field[@name='kanban_state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form//div[@class='oe_chatter']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form//sheet//div//button[@name='175']" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+
+            <xpath expr="//form//header//button[@name='175']" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+
+            <xpath expr="//form//button[@name='423']//field[@name='track_count']" position="attributes">
+                <attribute name="string">Schedules</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_invite_contacts'][1]" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_invite_contacts'][2]" position="attributes">
+                <attribute name="groups">base.group_system</attribute>
+            </xpath>
+
+            <xpath expr="//form//header//button[@name='action_mass_mailing_track_speakers']" position="attributes">
+                <attribute name="string">Contact Schedule Speakers</attribute>
+            </xpath>
+
+            <xpath expr="//form//sheet//group//group//field[@name='address_id']" position="replace">
+                <field name="address_id" context="{'show_address': 1}" domain="['|',('_interface_company_type', '=', 'location'),('_interface_company_type', '=', 'online_meeting')]"/>
+            </xpath>
+
+            <xpath expr="//form//sheet//group//group//field[@name='organizer_id']" position="attributes">
+                <attribute name="domain">[('_interface_company_type', '!=', 'person'), ('_interface_company_type', '!=', 'location'), ('_interface_company_type', '!=', 'online_meeting')]</attribute>
+            </xpath>
+
+            <xpath expr="//form//sheet//group//group//field[@name='tag_ids'][1]" position="attributes">
+                <attribute name="invisible"></attribute>
+            </xpath>
+            <xpath expr="//form//sheet//group//group//field[@name='tag_ids'][2]" position="attributes">
+                <attribute name="string">Tags 2</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- <xpath expr="//form//sheet//group//group//field[@name='tag_ids'][1]" position="replace">
+            </xpath>
+            <xpath expr="//form//sheet//group//group//field[@name='tag_ids'][2]" position="replace">
+            </xpath> -->
+            <xpath expr="//notebook//page[@name='questions']" position="attributes">
+                <attribute name="string">Attendees Form</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="event.action_event_view">
+       <field name="res_model">event.event</field>
+       <field name="view_mode">kanban,calendar,tree,form,pivot</field>
+    </record>
+
+    <record id="website_event_track.event_track_tag_category_action" model="ir.actions.act_window">
+        <field name="name">Schedule Tag Categories</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="website_event_track.action_event_track_location">
+        <field name="name">Schedule Locations</field>
+    </record>
+</odoo>

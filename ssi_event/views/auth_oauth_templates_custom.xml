@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="login" inherit_id="web.login">
+        <xpath expr="//div[@class='o_login_auth']" position="replace">
+        </xpath>
+        <xpath expr="//div[@class='justify-content-between mt-2 d-flex small']" position="replace">
+        </xpath>
+    </template>
+</odoo>
